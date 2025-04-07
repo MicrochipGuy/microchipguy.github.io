@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Intro | How I build a Bluetooth remote controlled car</title>
+
+        <link href="stylesheets/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <h1>How I built a Bluetooth remote controlled car</h1>
+        </header>
+
+        <section>
+            <nav>
+                <a href="#intro">Intro</a>
+                <a href="#current-progress">Current progress</a>
+                <a href="#disclaimer">Disclaimer</a>
+                <a href="#prerequisites">Prerequisites</a>
+                <a href="#special-thanks">Special thanks</a>
+            </nav>
+
+            <article>
+                <p id="intro">
+                    When I was 18, 19 years old, I began to build a small remote
+                    controlled car. At the very beginning, it was made of Lego
+                    Technic beams and axles, but time passed, and I kept upgrading
+                    it. The first upgrades were mostly design upgrades: front wheel
+                    drive, live rear axle (very useful to cross the small doorstep
+                    of my bedroom). But as I kept acquiring hardware, the car
+                    underwent deeper changes: control via Bluetooth with Arduino
+                    rather than the Lego radiofrequency system, 3D printed chassis,
+                    return to rear wheel drive, and rack steering.
+                </p>
+                <p>
+                    In this series of articles, we will see together how I to build this
+                    radio controlled car in its current state, step by step, from zero.
+                </p>
+
+                <h2 id="current-progress">Current progress</h2>
+
+                <p>
+                    At the time of writing, the car is still quite simple. It
+                    features a modular chassis, made of 3D printed elements bolted
+                    together. It has a mid-engine, rear wheel drive design, with a
+                    live rear axle allowing it to cross small obstacles. The low
+                    ground clearance allowed by the motor and the differential
+                    limits obstacle size to a couple millimeters to half a
+                    centimeter (1/8 to 1/5 inch), however it should be enough to
+                    keep it stable while on interior use, or while crossing a
+                    bedroom doorstep, or moving on irregular tiled floor.
+                </p>
+
+                <p>
+                    The car is moved by a Lego(-like) Power Functions small motor,
+                    linked to an Arduino Uno board. To achieve this, I had to cut a
+                    Lego Power Functions wire extender and wire it to a L293D dual
+                    H-bridge. You can find more about this <a href="https://www.hackster.io/Notthemarsian/take-control-over-lego-power-functions-ee0bfa">here</a>.
+                    The power is transmitted to the rear wheels using Lego Technic
+                    beams, through a 3D-printed open rear differential. As I am
+                    unable−as of today−to 3D print tyres, the car is also equipped
+                    with Lego Technic wheels.
+                </p>
+
+                <p>
+                    Unfortunately, the older Lego Power Functions parts I used are
+                    no longer in production. Two solutions remains: buying used
+                    parts (but they will eventually run out of stock), or buying
+                    clones/compatible parts. I will keep you informed from my
+                    research.
+                </p>
+
+                <p>
+                    At the heart of the car, we find an Arduino Uno board, wired to
+                    a micro-servomotor for steering, a L293D to control the main
+                    motor, a HC-05 Bluetooth module to communicate, and a 9V
+                    battery box (or just 9V battery, we will discuss on the
+                    difference later). Unfortunately, the Bluetooth module is not
+                    compatible with Apple devices.
+                </p>
+
+                <p>
+                    Last thing is the app on the phone. Unfortunately, the HC-05
+                    Bluetooth module is not compatible with Apple devices, an
+                    Android smartphone is required to play with the car. The app
+                    will be created using <a href="https://appinventor.mit.edu/">MIT App Inventor</a>.
+                    Even though it is accessible for a bunch of people, it has a
+                    few downsides: it has poor to no error handling mechanisms, and
+                    I had to face some bugs once the app was finished. If I am
+                    motivated enough, I will show you how to code an app in Java
+                    with <a href="https://libgdx.com/">libGDX</a>.
+                </p>
+
+                <h2 id="disclaimer">Disclaimer</h2>
+
+                <p>
+                    The car described in this article is intended to be a toy,
+                    however it is not suitable for children under 4 to 6 years
+                    old (because of the small parts). An adult supervision may
+                    be desirable.
+                </p>
+
+                <p>
+                    The car is primarily designed, and has been tested only for,
+                    interior use. Take it outside at your own risks.
+                </p>
+
+                <h2 id="prerequisites">Prerequisites</h2>
+
+                <p>
+                    To build the car, you will need some hardware, software, and
+                    tools.
+
+                    <!--
+                    <ul>
+                        <li>An Arduino Uno board</li>
+                        <li>A computer with Arduino IDE installed</li>
+                        <li>A Bluetooth HC-05 module</li>
+                        <li>A SG-90 micro servo</li>
+                        <li>A 9V (6LR61/6HR61) battery or a 6&times; AA (R6/LR6)
+                            battery box</li>
+                        <li>A 9V battery connector</li>
+                        <li>A 3D printer or a way to get the 3D printed chassis
+                            parts</li>
+                        <li>4&times;16mm and 4&times;16mm screws and 4mm nuts, and
+                            their matching screwdrivers</li>
+                    </ul>-->
+                </p>
+
+                <p>
+                    Let's first enumerate the needed electric and electronic stuff:
+                </p>
+
+                <ul>
+                    <li>An Arduino Uno board</li>
+                    <li>A computer running Arduino IDE</li>
+                    <li>A Bluetooth HC-05 module</li>
+                    <li>A SG-90 micro micro-servomotor</li>
+                    <li>A 9V (6LR61/6HR61) battery or a 6&times; AA (R6/LR6)
+                        battery box</li>
+                    <li>A 9V battery connector</li>
+                    <li>A micro breadboard</li>
+                    <li>A L293D integrated circuit</li>
+                    <li>A Lego Power Functions or compatible extender wire</li>
+                    <li>A Lego Power Functions or compatible small motor</li>
+                    <li>A bunch of jumper wires and/or 22AWG electric wire</li>
+                </ul>
+
+                <p>
+                    For the mechanical side you will need:
+                </p>
+
+                <ul>
+                    <li>A 3D printer or a way to get the 3D printed parts</li>
+                    <li>4&times;16mm and 4&times;12mm bolts, 4mm nuts</li>
+                    <li>Wrenches and screwdrivers</li>
+                </ul>
+
+                <p>
+                    To run the app, you will need a device running Android 10 or
+                    higher.
+                </p>
+
+                <h2 id="special-thanks">Special thanks</h2>
+
+                <p>
+                    I would like to thank <a href="https://www.atlantique-composants.fr/">Atlantique Composants</a>, the components
+                    retailer I usually source my components from, and
+                    specifically the staff of their shop in Rennes, for their
+                    availability and kindness. This project would never have
+                    come to this point without them.
+                </p>
+
+                <div class="figcontainer">
+                    <figure>
+                        <img src="img/atlantique-composants-banner.png" />
+                    </figure>
+                </div>
+
+                <h2 id="build-the-electronics">Build the electronics</h2>
+
+                <p>
+                    If you are ready to begin, let's go with the first part: the
+                    electronics.
+                </p>
+
+                <div id="bottom-links">
+                    <span></span>
+                    <a href="./motor.html">Part 1: The motor &gg;</a>
+                </div>
+
+                <h2>Legal stuff</h2>
+
+                <p>
+                    Though Lego elements and parts are used throughout the project,
+                    the project is neither supported nor endorsed by the Lego
+                    company. Moreover, the project involves modifying and using
+                    modified Lego parts. Such modifications voids any warranty on
+                    Lego parts, and in no event shoud the Lego company held for
+                    responsible of any possible outcome of such modifications.
+                </p>
+
+                <p>
+                    This project comes as is, withtout any warranty. You may
+                    reproduce it at your own risk, and in no event sould I be held
+                    for responsible of any possible outcome, including property
+                    damage or any kind of harm. That being said, this project is
+                    not something I would consider harmful or dangerous; in case of
+                    property damage or harm while realising it, you really should
+                    get in touch with the Guinness Book of World Records for your
+                    awkwardness.
+                </p>
+
+                <!--<p>
+                    Of course, NEVER plug this car to the mains! (115 or 230V
+                    depending on your country of residence).
+                </p>-->
+            </article>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title></title>
+        <link href="stylesheets/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <h1>RC car building part 1: The motor</h1>
+        </header>
+
+        <section>
+            <nav>
+                <a href="#wiring">The Lego Power Function wiring</a>
+                <a href="#create-breakout-cable">Create a breakout cable</a>
+                <a href="#motor-control">Control the motor with the Arduino</a>
+            </nav>
+
+            <article>
+                <p>
+                    A car would be nothing without a motor to make it move;
+                    however, to be able to control the Lego Power Functions motor
+                    with an Arduino Uno board, some preparation and circuitry will
+                    be needed. Let's dive in the details.
+                </p>
+
+                <h3 class="wiring">The Lego Power Functions wiring</h3>
+
+                <p>
+                    As explained in <a href="https://www.hackster.io/Notthemarsian/take-control-over-lego-power-functions-ee0bfa" target="_blank">this article</a>,
+                    the Lego Power Functions wiring consists of four cables: two
+                    cables on both ends, to provide power to devices using fixed
+                    voltage (LEDs, IR receivers, etc.), and control cables (C1 and
+                    C2) in the middle, to provide power to motors and actuators.
+                    On C1 and C2, the voltage can vary and the polarity can be
+                    switched. This will be useful to make our motor run at varying
+                    speed and direction.
+                </p>
+
+
+                <div class="figcontainer">
+                    <figure>
+                        <img src="img/lego-plug.avif" alt="Lego plug wiring" />
+
+                        <figcaption>Lego plug wiring. &copy; Patrick Müller via <a href="https://www.hackster.io/Notthemarsian/take-control-over-lego-power-functions-ee0bfa" target="_blank">Hackster.io</a></figcaption>
+                    </figure>
+                </div>
+
+                <p>
+                    In order to control the motor, we will have to access these
+                    wires from the Arduino board. To achieve this, let's create
+                    a breakout cable we can connect to our breadboard.
+                </p>
+
+                <h2 id="create-breakout-cable">Create a breakout cable</h2>
+
+                <p>
+                    Creating the breakout cable is simple: just cut the wire
+                    extender and strip each one of the four cables. While
+                    stripping should be enough, I advise to solder colored wire at
+                    the end of each stripped cable so you can remember which one
+                    is. Personally, I chosed to solder black wire on the GND,
+                    yellow on the C1, blue on the C2 and red on +9V (An alternative
+                    I considered is using green wire for both C1 and C2, as showed
+                    on the picture above).
+                </p>
+
+                <div class="figcontainer">
+                    <figure>
+                        <img src="img/my-breakout.JPG" alt="My breakout Lego cable" />
+
+                        <figcaption>
+                            My own breakout wire, with reinforced header pins
+                            on the wire ends and protective heat shrinking tubing on
+                            the solders.
+                        </figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="img/motor-forward.JPG" alt="Motor with C1 on VBat and C2 on GND" />
+
+                        <figcaption>
+                            To reverse the motor...
+                        </figcaption>
+                    </figure>
+
+                    <figure>
+                        <img src="img/motor-reverse.JPG" alt="Motor with C1 on GND and C2 on VBat" />
+
+                        <figcaption>
+                            ...just invert C1 and C2
+                        </figcaption>
+                </div>
+
+                <p>
+                    Now, if you connect the motor to the Lego plug of your
+                    breakout and the battery box to the C1 and C2 wires, the motor
+                    should spin. If you invert C1 and C2, the motor should spin
+                    backwards.
+                </p>
+
+                <p>
+                    Now we have a breakout cable ready, it's time to see how to
+                    control the motor with the Arduino.
+                </p>
+
+                <h2 id="motor-control">
+                    Controlling the motor with the Arduino</h2>
+
+                <p>
+                    With the breakout ready, it may be tempting to just connect
+                    the motor to the Arduino board and see what happens.
+                    <strong>Don't do it!</strong> The motor and the Arduino
+                    board uses different voltages and amperages: 5V and 20mA
+                    maximum for the Arduino board on one hand, 9 to 11V and
+                    up to 180mA for the motor on the other hand. To be able
+                    to control the motor from the Arduino board, we will use
+                    a small integrated circuit: the <a href="https://www.st.com/en/motor-drivers/l293d.html" target="_blank">L293D</a>.
+                    The datasheet is available <a href="doc/l293d.pdf" target="_blank">here</a>.
+                </p>
+
+                <p>
+                    The L293D is what we call a H-bridge (A <i>dual</i> H-bridge
+                    in fact), which will allow us to send the current from the
+                    batteries box to our motor, while modulating the current fed
+                    to the motor with our Arduino board.
+                </p>
+
+                <div class="figcontainer" style="width: 300px; margin-left: calc(50% - 150px)">
+                    <figure>
+                        <img src="img/l293d-pinout.png" alt="L293D pinout" />
+
+                        <figcaption>
+                            L293D pinout
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <p>
+                    The V<sub>S</sub> pin is to be connected to the positive
+                    wire of the battery box, the V<sub>SS</sub> to the 5V pin of
+                    the Arduino board (do not invert them!), and the GND to the
+                    negative wire of the batteries box and the GND pin of the
+                    Arduino. All the GND pin on the chip are connected together,
+                    so you can either connect the negative of the batteries box
+                    on any one and the GND of the Arduino on any other, or all
+                    on the same, it does not matter.
+                </p>
+
+                <!--<p>
+                    While the Lego Power Functions motor needs 9V and up to
+                    180mA to work properly, the Arduino board can only provide
+                    5V and 20mA. Connecting the motor to the pins of your
+                    Arduino would not be sufficient to get the motor running−
+                    and may even damage the Arduino board. To operate the
+                    motor, we have to use a <a href="https://en.wikipedia.org/wiki/H-bridge" target="_blank">H-bridge</a>.
+                </p>
+
+                <p>
+                    The H-bridge we will use is a <a href="https://www.st.com/en/motor-drivers/l293d.html" target="_blank">L293D</a>
+                    integrated circuit (datasheet available <a href="doc/l293d.pdf" target="_blank">here</a>).
+                </p>
+
+                <div class="figcontainer" style="width: 300px; margin-left: calc(50% - 150px);">
+                    <figure>
+                        <img src="img/l293d-pinout.png" alt="L293D pinout" />
+
+                        <figcaption>
+                            L293D pinout
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <p>
+                    A H-bridge consists of 5 pins: Enable 1, Input 1, Input 2,
+                    Output 1 and Output 2 (or Enable 2, Input 3, Input 4,
+                    Output 3 and Output 4 if you use the bridge on the right
+                    side of the chip).
+                </p>-->
+
+                <div id="bottom-links">
+                    <a href="index.html">&ll; Introduction</a>
+                    <a href="mechanics.html">Part 2: Mechanics and structure &gg;</a>
+                </div>
+            </article>
+        </section>
+    </body>
+</html>
