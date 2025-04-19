@@ -7,6 +7,7 @@
 
         <link href="stylesheets/style.css" rel="stylesheet" />
         <link href="stylesheets/style-narrow.css" rel="stylesheet" media="(max-width: 600px)" />
+
     </head>
     <body>
         <header>
@@ -111,6 +112,8 @@
                 <h2 id="motor-control">
                     Controlling the motor with the Arduino</h2>
 
+                <h3>The circuit</h3>
+
                 <p>
                     With the breakout ready, it may be tempting to just connect
                     the motor to the Arduino board and see what happens.
@@ -151,36 +154,76 @@
                     on the same, it does not matter.
                 </p>
 
-                <!--<p>
-                    While the Lego Power Functions motor needs 9V and up to
-                    180mA to work properly, the Arduino board can only provide
-                    5V and 20mA. Connecting the motor to the pins of your
-                    Arduino would not be sufficient to get the motor running−
-                    and may even damage the Arduino board. To operate the
-                    motor, we have to use a <a href="https://en.wikipedia.org/wiki/H-bridge" target="_blank">H-bridge</a>.
-                </p>
-
                 <p>
-                    The H-bridge we will use is a <a href="https://www.st.com/en/motor-drivers/l293d.html" target="_blank">L293D</a>
-                    integrated circuit (datasheet available <a href="doc/l293d.pdf" target="_blank">here</a>).
+                    To control the motor, we have to connect the Enable 2 pin to
+                    the pin 3 of the Arduino, Input 3 to pin 4 and Input 4 to
+                    pin 5. The motor itself should be connected to the Ouput 3
+                    and 4 of the integrated circuit.
                 </p>
 
-                <div class="figcontainer" style="width: 300px; margin-left: calc(50% - 150px);">
+                <div class="figcontainer">
                     <figure>
-                        <img src="img/l293d-pinout.png" alt="L293D pinout" />
+                        <img src="img/l293d-circuit.png" alt="L293D circuit" />
 
                         <figcaption>
-                            L293D pinout
+                            Circuit to test the L293D
                         </figcaption>
                     </figure>
                 </div>
 
+                <h3>The code</h3>
+
                 <p>
-                    A H-bridge consists of 5 pins: Enable 1, Input 1, Input 2,
-                    Output 1 and Output 2 (or Enable 2, Input 3, Input 4,
-                    Output 3 and Output 4 if you use the bridge on the right
-                    side of the chip).
-                </p>-->
+                    To check if everyhting works as expected, we will program
+                    the Arduino to make the motor spin in a direction at
+                    increasing speed, stop it, wait for two seconds, and the
+                    same in the other direction. This is what this code does:
+                </p>
+
+                <div class="code-div">
+                    <div class="code-copy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M384 336l-192 0c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l140.1 0L400 115.9 400 320c0 8.8-7.2 16-16 16zM192 384l192 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L192 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l192 0c35.3 0 64-28.7 64-64l0-32-48 0 0 32c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l32 0 0-48-32 0z"/></svg></div>
+                    <div class="code-copy-tooltip"><span>Copied!</span></div>
+
+                    <pre><code>#define PIN_EN      3
+#define PIN_3A      4
+#define PIN_4A      5
+
+void setup()
+{
+        pinMode(PIN_EN, OUTPUT);
+        pinMode(PIN_3A, OUTPUT);
+        pinMode(PIN_4A, OUTPUT);
+
+        digitalWrite(PIN_EN, LOW);
+}
+
+void loop()
+{
+        digitalWrite(PIN_3A, HIGH);
+        digitalWrite(PIN_4A, LOW);
+
+        for (int i = 0; i < 256; i++) {
+                analogWrite(PIN_EN, i);
+                delay(10);
+        }
+
+        digitalWrite(PIN_EN, LOW);
+
+        sleep(2000);
+
+        digitalWrite(PIN_3A, LOW);
+        digitalWrite(PIN_4A, HIGH);
+
+        for (int i = 0; i < 256; i++) {
+                analogWrite(PIN_EN, i);
+                delay(10);
+        }
+
+        digitalWrite(PIN_EN, LOW);
+
+        sleep(2000);
+}</code></pre>
+                </div>
 
                 <div id="bottom-links">
                     <a href="index.html">&ll; Introduction</a>
@@ -188,5 +231,32 @@
                 </div>
             </article>
         </section>
+
+        <script>
+            var codes = document.querySelectorAll("div.code-div");
+
+            for (var i = 0; i < codes.length; i++) {
+                var codecopy = codes[i].childNodes[1];
+                var tooltip = codes[i].childNodes[3];
+                var code = codes[i].childNodes[5].childNodes[0].innerHTML;
+
+                function tooltipAppear() {
+                    tooltip.style.display = "block";
+                }
+
+                function tooltipDisappear() {
+                    tooltip.style.display = "none";
+                }
+
+                codecopy.addEventListener("click", function() {
+                    console.log("Clicked");
+                    navigator.clipboard.writeText(code);
+
+                    tooltipAppear();
+
+                    setTimeout(tooltipDisappear, 2000);
+                });
+            }
+        </script>
     </body>
 </html>

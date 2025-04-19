@@ -9,7 +9,7 @@ body {
 
 header {
     position: relative;
-    
+
     display: block;
     box-sizing: border-box;
     margin: 0;
@@ -157,4 +157,56 @@ div.figcontainer figure figcaption {
 
 div.figcontainer figure figcaption a {
     color: white;
+}
+
+h3 {
+    text-indent: 2.5em;
+}
+
+div.code-div {
+    position: relative;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+
+    background: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+div.code-div div.code-copy {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    box-sizing: border-box;
+    width: 35px;
+    height: 35px;
+    padding: 10px;
+
+    background: #ddd;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+div.code-div div.code-copy-tooltip {
+    display: none;
+
+    position: absolute;
+    top: 45px;
+    right: 5px;
+
+    box-sizing: border-box;
+    padding: 5px;
+
+    background: #222;
+    color: #f5f5f5;
+    border-radius: 5px;
+}
+
+div.code-div div.code-copy-tooltip {
+    font-size: 0.75em;
+    font-weight: bold;
 }
