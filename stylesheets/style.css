@@ -210,3 +210,22 @@ div.code-div div.code-copy-tooltip {
     font-size: 0.75em;
     font-weight: bold;
 }
+
+footer {
+    display: block;
+    margin-top: 0;
+    padding: 25px;
+
+    background-color: #323235;
+    color: #828286;
+}
+
+footer p {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0;
+}
+
+footer p a {
+    color: #aaa;
+}
